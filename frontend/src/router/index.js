@@ -1,10 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from "../store/index.js";
 import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import Dashboard from '../views/Dashboard.vue';
 import Surveys from '../views/Surveys.vue';
 import DefaultLayout from '../components/DefaultLayout.vue';
-import store from "../store/index.js";
+import AuthLayout from '../components/AuthLayout.vue';
+
 
 const routes = [
   {
@@ -19,15 +21,24 @@ const routes = [
     ]
   },
   {
-    path: '/login',
-    name: 'login',
-    component: Login
+    path: '/auth',
+    redirect: '/login',
+    name: 'auth',
+    component: AuthLayout,
+    children: [
+      {
+        path: '/login',
+        name: 'login',
+        component: Login
+      },
+      {
+        path: '/register',
+        name: 'register',
+        component: Register
+      },
+    ],
   },
-  {
-    path: '/register',
-    name: 'register',
-    component: Register
-  },
+
 ];
 const router = createRouter({
   history: createWebHistory(),
