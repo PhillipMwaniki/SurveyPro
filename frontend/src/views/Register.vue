@@ -1,5 +1,23 @@
 <script setup>
+import store from '../store';
+import { useRouter } from "vue-router";
 
+const router = useRouter();
+    const user = {
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+        remember: '',
+    }
+
+    const register = (event) => {
+        store.
+        dispatch('register', user)
+            .then((res) => {
+                router.push({ name: 'dashboard' });
+            })
+    }
 </script>
 <template>
     <div>
@@ -11,32 +29,38 @@
             <router-link :to="{ name: 'login' }" class="font-medium text-indigo-600 hover:text-indigo-500">Login to your account</router-link>
         </p>
     </div>
-    <form class="mt-8 space-y-6" action="#" method="POST">
+    <form class="mt-8 space-y-6" @submit.prevent="register" method="POST">
         <input type="hidden" name="remember" value="true">
         <div class="-space-y-px rounded-md shadow-sm">
             <div>
                 <label for="full_name" class="sr-only">Full Name</label>
                 <input id="full_name" name="full_name" type="text" autocomplete="full_name" required
                        class="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                       placeholder="Full Name">
+                       placeholder="Full Name" v-model="user.name">
             </div>
             <div>
                 <label for="email" class="sr-only">Email address</label>
                 <input id="email" name="email" type="email" autocomplete="email" required
                        class="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                       placeholder="Email address">
+                       placeholder="Email address" v-model="user.email">
             </div>
             <div>
                 <label for="password" class="sr-only">Password</label>
-                <input id="password" name="password" type="password" autocomplete="current-password" required
+                <input id="password" name="password" type="password" autocomplete="password" required
+                       class="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                       placeholder="Password"  v-model="user.password">
+            </div>
+            <div>
+                <label for="password_confirmation" class="sr-only">Password Confirmation</label>
+                <input id="password_confirmation" name="password_confirmation" type="password" autocomplete="password_confirmation" required
                        class="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                       placeholder="Password">
+                       placeholder="Password Confirmation"  v-model="user.password_confirmation">
             </div>
         </div>
 
         <div class="flex items-center justify-between">
             <div class="flex items-center">
-                <input id="remember-me" name="remember-me" type="checkbox"
+                <input id="remember-me" name="remember-me" type="checkbox" v-model="user.remember"
                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
                 <label for="remember-me" class="ml-2 block text-sm text-gray-900">Remember me</label>
             </div>
