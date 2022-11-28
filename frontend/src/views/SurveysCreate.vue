@@ -1,14 +1,18 @@
 <script setup>
-import PageComponent from "../components/PageComponent.vue";
-import { IdentificationIcon } from '@heroicons/vue/24/solid'
+import { IdentificationIcon, PlusIcon } from '@heroicons/vue/24/solid'
+import { v4 as uuidV4 } from 'uuid';
 import { useStore } from "vuex";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+
+import PageComponent from "../components/PageComponent.vue";
+import QuestionEditor from "../components/Editor/QuestionEditor.vue";
 
 const store = useStore();
 const route = useRoute();
 
 let model = ref({
+    id: 0,
     title: '',
     status: false,
     description: null,
@@ -25,6 +29,32 @@ onMounted(() => {
 
 const submit = () => {
     // save or update
+}
+
+const addQuestion = (index) => {
+    const newQuestion = {
+      id: uuidV4(),
+      type: "text",
+      question: "",
+      description: null,
+      data: {}
+    };
+    model.value.questions.splice(index, 0, newQuestion);
+}
+
+const deleteQuestion = (questionId) => {
+    model.value.questions = model.value.questions.filter(
+        (x) => x !== questionId
+    );
+}
+
+const questionChange = (question) => {
+    model.value.questions = model.value.questions.map(q => {
+        if (q.id === question.id) {
+            return JSON.parse(JSON.stringify(question));
+        }
+        return q;
+    });
 }
 </script>
 <template>
@@ -61,6 +91,7 @@ const submit = () => {
                                     type="file"
                                     name="file"
                                     id="file"
+
                                 >
                                 Change</button>
                         </div>
@@ -132,6 +163,45 @@ const submit = () => {
                     <!--/ Status -->
                 </div>
                 <!--/ Survey Fields -->
+                <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                    <h3 class="text-2xl font-semibold"></h3>
+                </div>
+
+                <div class="px-4 py-3 bg-white text-right sm:px-6">
+                    <h3 class="text-2xl font-semibold flex items-center justify-between">
+                        Questions
+                    <!--  Add a new question  -->
+                        <button type="button"
+                                @click="addQuestion()"
+                                class="flex items-center text-sm py-1 px-4 rounded-sm text-white
+                                        bg-gray-600 hover:bg-gray-700"
+                        >
+                            <PlusIcon class="h-4 w-4 mt-0.5 flex items-center" />
+                            <span class="flex items-center">Add a question</span>
+                        </button>
+                    <!--  /Add a new question  -->
+                    </h3>
+                    <div v-if="!model.questions.length" class="text-center text-gray-600">
+                        You don't have any questions created!
+                    </div>
+                    <div v-else v-for="(question, index) in model.questions" :key="question.id">
+                        <QuestionEditor
+                            :question="question"
+                            :index="index"
+                            @change="questionChange"
+                            @addQuestion="addQuestion"
+                            @deleteQuestion="deleteQuestion"
+                        />
+                    </div>
+                </div>
+                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                    <button type="submit"
+                            class="inline-flex justify-center py-2 px-4 border border-transparent
+                                   shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600
+                                   hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2
+                                   focus:ring-indigo-500"
+                    >Save</button>
+                </div>
             </div>
         </form>
     </PageComponent>
