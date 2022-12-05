@@ -3,13 +3,14 @@ import { IdentificationIcon, PlusIcon } from '@heroicons/vue/24/solid'
 import { v4 as uuidV4 } from 'uuid';
 import { useStore } from "vuex";
 import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 import PageComponent from "../components/PageComponent.vue";
 import QuestionEditor from "../components/Editor/QuestionEditor.vue";
 
 const store = useStore();
 const route = useRoute();
+const router = useRouter();
 
 let model = ref({
     id: 0,
@@ -28,7 +29,12 @@ onMounted(() => {
 })
 
 const submit = () => {
-    // save or update
+    store.dispatch('saveSurvey', model.value).then(({ data }) => {
+        router.push({
+            name: 'surveys.update',
+            params: { id: data.data.id },
+        })
+    });
 }
 
 const addQuestion = (index) => {
